@@ -1,282 +1,400 @@
-from tkinter import*
+# Python program to create a simple GUI calculator using Tkinter 
+
+# import everything from tkinter 
+import tkinter as tk
+
+#import tkinter.messagebox
+from tkinter import messagebox
+
+#import pyperclip module
+import pyperclip 
+
+#import math module
 import math
-import parser
-import tkinter.messagebox
+        
+# assigning empty string to the variable operator 
+operator = ""
 
-root = Tk()
-root.title("Scientific Calculator")
-root.configure(background="blanched almond")
-root.resizable(width=False,height=False)
-root.geometry("480x568+0+0")
+# assigning switch variable to none 
+switch=None
 
-calc=Frame(root)
-calc.grid()
+#============================================================================================================================================================================#
 
-class Calculator():
-    def __init__(self):
-        self.total=0
-        self.current=""
-        self.input_value=True
-        self.ckeck_sum=False
-        self.operator=""
-        self.result=False
-        
-    def numberEnter(self,num):
-        self.result=False
-        firstnum=txtDisplay.get()
-        secondnum=str(num)
-        
-        if self.input_value:
-            self.current=secondnum
-            self.input_value=False
-        else:
-            if secondnum==".":
-                if secondnum in firstnum:
-                    return
-            self.current= firstnum+secondnum
-        self.display(self.current)
-        
-    def sum_of_total(self):
-        self.result=True
-        self.current=float(self.current)
-        if self.check_sum==True:
-            self.valid_function()
-        else:
-            self.total=float(txtDisplay.get())
-        
-    def display(self,value):
-        txtDisplay.delete(0,END)
-        txtDisplay.insert(0, value)
-        
-    def valid_function(self):
-        if self.op=="add":
-            self.total+=self.current
-        if self.op=="sub":
-            self.total-=self.current
-        if self.op=="multi":
-            self.total*=self.current
-        if self.op=="divide":
-            self.total/=self.current
-        if self.op=="mod":
-            self.total%=self.current
-        self.input_value=True
-        self.check_sum=False
-        self.display(self.total)
-        
-    def operation(self,op):
-        self.current=float(self.current)
-        if self.check_sum:
-            self.valid_function()
-        elif not self.result:
-            self.total=self.current
-            self.input_value=True
-        self.check_sum=True
-        self.op=op
-        self.result=False
-        
-    def pi(self):
-        self.result=False
-        self.current=math.pi
-        self.display(self.current)
-        
-    def cos(self):
-        self.result=False
-        self.current=math.cos(float(txtDisplay.get()))
-        self.display(self.current)
-        
-    def tan(self):
-        self.result=False
-        self.current=math.tan(float(txtDisplay.get()))
-        self.display(self.current)
+# Function to update expression in the text entry box 
+def Click(numbers):
     
-    def sin(self):
-        self.result=False
-        self.current=math.sin(float(txtDisplay.get()))
-        self.display(self.current)
+    # point out the global operator variable 
+    global operator 
     
-    def tau(self):
-        self.result=False
-        self.current=math.tau
-        self.display(self.current)
+    if numbers == "00":
         
-    def e(self):
-        self.result=False
-        self.current=math.e
-        self.display(self.current)
+        operator += numbers
+    
+    else:
+        operator += str(numbers)
+    
+    # update the operator by using set method 
+    text_Input.set(operator)
+
+#============================================================================================================================================================================#
+
+# Function to clear the contents of text entry box 
+def AllClearDisplay():
+    global operator
+    operator = ""      
+    text_Input.set("")
+    
+#============================================================================================================================================================================#
+
+# Function to clear the contents of text entry box 
+def ClearDisplay(numbers):
+    global operator
+   
+    operator=operator[0:-1] # If Operator is "1234" then it sets operator to "123"
+
+    text_Input.set(operator)
+
+#============================================================================================================================================================================#
+# Function to evaluate the final expression 
+def EqualsInput():
+    
+    # Putting the code inside the try block which may generate the error 
+    try:
         
-add_value=Calculator()
-
-txtDisplay = Entry(calc,font=('arial',20,'bold'), bd=30, width = 28, 
-                   bg='lavender',justify='right')
-txtDisplay.grid(row=0, columnspan=4, pady=1)
-txtDisplay.insert(0,"0")
-
-numberpad="789456123"
-i=0
-button=[]
-for j in range(2,5):
-    for k in range(3):
-        button.append(Button(calc, width=5, height=2, font=('arial',20,'bold'),
-                    bd=4, text=numberpad[i]))
-        button[i].grid(row=j,column=k, pady =1)
-        button[i]["command"]= lambda x=numberpad [i]: add_value.numberEnter(x)       
-        i+=1
+        global operator     
         
-#=============================================================================#
-                               #STANDARD PART#
-#=============================================================================#
+        # eval function evaluate the operator and str function convert the result into string 
+        sumup=str(eval(operator))
 
-buttonClear=Button(calc, text="C", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender').grid(row=1,column=0, pady=1)
+        text_Input.set(sumup)
+        
+        # initialze the operator variable by empty string 
+        operator = ""
+        
+    except: 
+        text_Input.set(" error ") 
+        operator = "" 
+       
+#============================================================================================================================================================================#
 
-buttonAllClear=Button(calc, text="CE", width=5,height=2, font=('arial',20,
-                     'bold'), bd=4,bg='lavender').grid(row=1,column=1, pady=1)
+# Function to call pi value from math value for evaluation
+def Pi():
+        global operator
+        operator += str(math.pi)
+        text_Input.set(operator)
 
-buttonSquare_root=Button(calc, text="√", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender').grid(row=1,column=2, pady=1)
+#============================================================================================================================================================================#
 
-buttonAddition=Button(calc, text="+", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender', command = lambda: add_value.operation("add")).grid(row=1,column=3, pady=1)
+# Function to find modulus
+def Percent():
+    global operator
+    operator=float(operator)/100
+    text_Input.set(operator)
+    
+#============================================================================================================================================================================#
 
-buttonSubstract=Button(calc, text="-", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender', command = lambda: add_value.operation("sub")).grid(row=2,column=3, pady=1)
+# Function to find log 
+def Square():
+    global operator
+    operator=float(operator)*float(operator)
+    text_Input.set(operator)
+    
+#============================================================================================================================================================================#
 
-buttonMultiply=Button(calc, text="*", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender', command = lambda: add_value.operation("multi")).grid(row=3,column=3, pady=1)
+# Function to find sine of numbers
+def Sine():
+   global operator
+   try:
+        ans = float(operator)
+        if switch is True:
+            operator =str( math.sin(math.radians(ans)))
+            text_Input.set(operator)
+            
+        else:
+            operator=str(math.sin(ans))
+            text_Input.set(operator)
+            
+   except Exception:
+       operator=" "
+       text_Input.set("error")
+        
+#============================================================================================================================================================================#
 
-buttonDivision=Button(calc, text="÷", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender', command = lambda: add_value.operation("divide")).grid(row=4,column=3, pady=1)
+# Function to find cosine of numbers
+def Cosine():
+    global operator
+    try:
+        ans = float(operator)
+        if switch is True:
+            operator =str( math.cos(math.radians(ans)))
+            text_Input.set(operator)
+            
+        else:
+            operator=str(math.cos(ans))
+            text_Input.set(operator)
+            
+    except Exception:
+        operator=" "
+        text_Input.set("error")
 
-buttonZero=Button(calc, text="0", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender', command = lambda: add_value.numberEnter(0)
-                  ).grid(row=5,column=0, pady=1)
+#============================================================================================================================================================================#
 
-buttonDot=Button(calc, text=".", width=5,height=2, font=('arial',20,'bold'),
-                 bd=4,bg='lavender', command = lambda: add_value.numberEnter(".")).grid(row=5,column=1, pady=1)
+# Function to find tangent of numbers
+def Tan():
+   global operator
+   try:
+        ans = float(operator)
+        if switch is True:
+            operator = str(math.tan(math.radians(ans)))
+            text_Input.set(operator)
+            
+        else:
+            operator=str(math.tan(ans))
+            text_Input.set(operator)
+            
+   except Exception:
+       operator=" "
+       text_Input.set("error")
+       
+#============================================================================================================================================================================#
 
-buttonPM=Button(calc, text="±", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender').grid(row=5,column=2, pady=1)
+# Function to find factorial of numbers
+def Factorial():
+    global operator
+    try:
+        ans = float(operator)
+        operator = str(math.factorial(ans))
+        text_Input.set(operator)
+        
+    except Exception:
+        operator=" "
+        text_Input.set("error")
 
-buttonEquals=Button(calc, text="=", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender').grid(row=5,column=3, pady=1)
+#============================================================================================================================================================================#
 
-#=============================================================================#
-                               #SCIENTIFIC PART#
-#=============================================================================#
+# Function to find value of log with base 10
+def Logarithm():
+    global operator
+    try:
+        operator = math.log10(float(operator))
+        text_Input.set(operator)
+        
+    except Exception:
+        operator=" "
+        text_Input.set("error")
 
-buttonPi=Button(calc, text="Pi", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender', command = add_value.pi).grid(row=1,column=4, pady=1)
+#============================================================================================================================================================================#
 
-buttonCos=Button(calc, text="cos", width=5,height=2, font=('arial',20,
-                     'bold'), bd=4,bg='lavender', command = add_value.cos).grid(row=1,column=5, pady=1)
+# Function to find natural log
+def Ln():
+    global operator
+    try:
+        ans = float(operator)
+        operator = math.log(ans)
+        text_Input.set(operator)
+        
+    except Exception:
+        operator=" "
+        text_Input.set("error")
+        
+#============================================================================================================================================================================#
 
-buttonTan=Button(calc, text="tan", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender', command = add_value.tan).grid(row=1,column=6, pady=1)
+# Function to switch from radian to degree and vice-versa
+def Convert():
+    global switch
+    if switch is None:
+        switch = True
+        conv_btn['text'] = "Deg"
+    else:
+        switch = None
+        conv_btn['text'] = "Rad"
+        
+#============================================================================================================================================================================#
 
-buttonSin=Button(calc, text="Sin", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender', command = add_value.sin).grid(row=1,column=7, pady=1)
+# Function to find exponent of numbers
+def E():
+    global operator
+    operator=str(math.exp(float(operator)))
+    text_Input.set(operator)
+    
+#============================================================================================================================================================================#
 
-#=============================================================================#
+# function to copy from text entry box
+def Copy():
+    pyperclip.copy(operator)
+    
+#============================================================================================================================================================================#
 
-button2Pi=Button(calc, text="2Pi", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender', command = add_value.tau).grid(row=2,column=4, pady=1)
+# function to copy from text entry box
+def Paste():
+    global operator
+    #operator=operator+str(pyperclip.paste())
+    operator += str(pyperclip.paste())
+    text_Input.set(operator)
+    
+#============================================================================================================================================================================#
 
-buttonCosh=Button(calc, text="cosh", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=2,column=5, pady=1)
-
-buttonTanh=Button(calc, text="tanh", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=2, column=6, pady=1)
-
-buttonSinh=Button(calc, text="sinh", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=2,column=7, pady=1)
-
-#=============================================================================#
-
-buttonLog=Button(calc, text="log", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender').grid(row=3,column=4, pady=1)
-
-buttonExp=Button(calc, text="Exp", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=3,column=5, pady=1)
-
-buttonMod=Button(calc, text="Mod", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=3,column=6, pady=1)
-
-buttonE=Button(calc, text="e", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=3,column=7, pady=1)
-
-#=============================================================================#
-
-buttonLog2=Button(calc, text="log2", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender').grid(row=4,column=4, pady=1)
-
-buttonDeg=Button(calc, text="deg", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=4,column=5, pady=1)
-
-buttonAcosh=Button(calc, text="acosh", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=4,column=6, pady=1)
-
-buttonAsinh=Button(calc, text="asinh", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4).grid(row=4,column=7, pady=1)
-
-#=============================================================================#
-
-buttonLog10=Button(calc, text="log10", width=5,height=2, font=('arial',20,
-                       'bold'),bd=4,bg='lavender').grid(row=5,column=4, pady=1)
-
-buttonLog1p=Button(calc, text="log1p", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender').grid(row=5,column=5, pady=1)
-
-buttonExpm1=Button(calc, text="expm1", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender').grid(row=5,column=6, pady=1)
-
-buttonLgamma=Button(calc, text="lgamma", width=5,height=2, font=('arial',20,'bold'),
-                  bd=4,bg='lavender').grid(row=5,column=7, pady=1)
-
-lblDisplay=Label(calc, text="Scientific Calculator", font=('arial',25,'bold'),
-                  justify = 'center')
-lblDisplay.grid(row=0, column =4,columnspan =4)
-
-#=============================================================================#
-
-#=============================================================================#
-                           #MENU & FUNCTIONS#
-#=============================================================================#
-
+# function to exit from the application window
 def Exit():
-    Exit=tkinter.messagebox.askyesno("Scientific Calculator",
-                                     "Confirm if you want to exit")
+    Exit=messagebox.askyesno("Scientific Calculator","Confirm if you want to exit")
     if Exit > 0:
-        root.destroy()
+        cal.destroy()
         return
-    
-def Scientific():
-    root.resizable(width=False,height=False)
-    root.geometry("885x568+0+0")
-    
-def Standard():
-    root.resizable(width=False,height=False)
-    root.geometry("480x568+0+0")
 
-menubar=Menu(calc)
+#============================================================================================================================================================================#
 
-filemenu=Menu(menubar, tearoff=0)
-menubar.add_cascade(label="File",menu=filemenu)
-filemenu.add_command(label="Standard", command = Standard)
-filemenu.add_command(label="Scientific", command = Scientific)
-filemenu.add_separator()
-filemenu.add_command(label="Exit", command = Exit)
+# Driver code 
 
-editmenu=Menu(menubar, tearoff=0)
+numbers, powers, = 0, 0
+
+# create a GUI window 
+cal = tk.Tk() 
+
+# Restrict to the given size
+# Window couldn't be resized
+cal.resizable(0, 0)
+
+# set the background colour of GUI window 
+cal.configure(background="light slate grey") 
+
+# set the title of GUI window 
+cal.title("Calculator") 
+
+# set the configuration of GUI window 
+cal.geometry("615x440") 
+
+#creating menubar in the GUI window
+menubar=tk.Menu(cal)
+
+#adding Edit menu to menubar
+editmenu=tk.Menu(menubar, tearoff=0)
 menubar.add_cascade(label="Edit",menu=editmenu)
-editmenu.add_command(label="Cut")
-editmenu.add_command(label="Copy")
-editmenu.add_separator()
-editmenu.add_command(label="Paste")
 
-helpmenu=Menu(menubar, tearoff=0)
-menubar.add_cascade(label="Help",menu=helpmenu)
-helpmenu.add_command(label="View Help")
+#adding copy & paste item to Edit
+editmenu.add_command(label="Copy", command=Copy)
+editmenu.add_command(label="Paste", command=Paste)
 
+#adding File menu to menubar
+exitmenu=tk.Menu(menubar, tearoff=0)
 
-root.configure(menu=menubar)
-root.mainloop()
+#adding Exit item to Exit
+menubar.add_cascade(label="Exit",menu=exitmenu)
+exitmenu.add_command(label="Exit", command = Exit)
+
+# to enable the menu in main window
+cal.configure(menu=menubar)
+
+# StringVar() is the variable class 
+# we create an instance of this class 
+text_Input = tk.StringVar() 
+
+# create the text entry box for showing the expression . 
+# grid method is used for placing the widgets at respective positions 
+# in table like structure . 
+txtDisplay = tk.Entry(cal, font = ('verdana',20), textvariable=text_Input, bd=28, insertwidth=0, bg="light gray", justify='right').grid(columnspan=7)
+
+# creating Buttons and place at a particular location inside the window . 
+# when user press the button, the command or function affiliated to that button is executed .
+        
+buttonAllClear = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="AC", bg="lavender", command=AllClearDisplay)
+buttonAllClear.grid(row=1, column=0)
+
+percent = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="%", bg="lavender", command=lambda:Percent())
+percent.grid(row=1, column=1)
+
+buttonClear = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="<=", bg="lavender", command=lambda:ClearDisplay("<="))
+buttonClear.grid(row=1, column=2)
+
+Division = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="/", bg="thistle1", command=lambda:Click("/"))
+Division.grid(row=1, column=3)
+
+pi = tk.Button(cal, padx=16, width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="Pi", bg="thistle1", command=Pi)
+pi.grid(row=1, column=4)
+
+conv_btn = tk.Button(cal, padx=16, width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="Rad", bg="thistle1", command=Convert)
+conv_btn.grid(row=1, column=5)
+
+#============================================================================================================================================================================#
+
+button7 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="7", bg="lavender", command=lambda:Click(7))
+button7.grid(row=2, column=0)
+
+button8 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="8", bg="lavender", command=lambda:Click(8))
+button8.grid(row=2, column=1)
+
+button9 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="9", bg="lavender", command=lambda:Click(9))
+button9.grid(row=2, column=2)
+
+Multiplication = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="*", bg="thistle1", command=lambda:Click("*"))
+Multiplication.grid(row=2, column=3)
+
+square = tk.Button(cal, padx=16,  width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="x2", bg="thistle1", command=lambda:Square())
+square.grid(row=2, column=4)
+
+log10 = tk.Button(cal, padx=16,  width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="log10", bg="thistle1", command=lambda:Logarithm())
+log10.grid(row=2, column=5)
+
+#============================================================================================================================================================================#
+
+button4 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="4", bg="lavender", command=lambda:Click(4))
+button4.grid(row=3, column=0)
+
+button5 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="5", bg="lavender", command=lambda:Click(5))
+button5.grid(row=3, column=1)
+
+button6 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="6", bg="lavender", command=lambda:Click(6))
+button6.grid(row=3, column=2)
+
+Subtraction = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="-", bg="thistle1", command=lambda:Click("-"))
+Subtraction.grid(row=3, column=3)
+
+sine = tk.Button(cal, padx=16, bd=8,  width=3, fg="black", font = ('arial',20,'bold'), text="sin", bg="thistle1", command=lambda:Sine())
+sine.grid(row=3, column=4)
+
+exp = tk.Button(cal, padx=16, width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="e", bg="thistle1", command=lambda:E())
+exp.grid(row=3, column=5)
+
+#============================================================================================================================================================================#
+
+button1 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="1", bg="lavender", command=lambda:Click(1))
+button1.grid(row=4, column=0)
+
+button2 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="2", bg="lavender", command=lambda:Click(2))
+button2.grid(row=4, column=1)
+
+button3 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="3", bg="lavender", command=lambda:Click(3))
+button3.grid(row=4, column=2)
+
+Addition = tk.Button(cal, padx=16, pady=2, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="+", bg="thistle1", command=lambda:Click("+"))
+Addition.grid(row=4, column=3)
+
+cosine = tk.Button(cal, padx=16, width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="cos", bg="thistle1", command=lambda:Cosine())
+cosine.grid(row=4, column=4)
+
+factorial = tk.Button(cal, padx=16,  width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="x!", bg="thistle1", command=lambda:Factorial())
+factorial.grid(row=4, column=5)
+
+#============================================================================================================================================================================#
+
+button0 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="0", bg="lavender", command=lambda:Click(0))
+button0.grid(row=5, column=0)
+
+button00 = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="00", bg="lavender", command=lambda:Click("00"))
+button00.grid(row=5, column=1)
+
+buttonDot = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text=".", bg="lavender", command=lambda:Click("."))
+buttonDot.grid(row=5, column=2)
+
+buttonEquals = tk.Button(cal, padx=16, bd=8, width=3, fg="black", font = ('arial',20,'bold'), text="=", bg="thistle1", command=EqualsInput)
+buttonEquals.grid(row=5, column=3)
+
+tan = tk.Button(cal, padx=16, width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="tan", bg="thistle1", command=lambda:Tan())
+tan.grid(row=5, column=4)
+
+ln = tk.Button(cal, padx=16,  width=3, bd=8, fg="black", font = ('arial',20,'bold'), text="ln", bg="thistle1", command=lambda:Ln())
+ln.grid(row=5, column=5)
+
+#============================================================================================================================================================================#
+
+#start GUI window
+cal.mainloop()

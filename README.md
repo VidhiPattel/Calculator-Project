@@ -1,2 +1,2 @@
 # Calculator-Project
-This project is to make a calculator using tkinter module in Python
+The project was to develop a Scientifc calculator using python. In the module, we used the tkinter library of Python to develop the project.
